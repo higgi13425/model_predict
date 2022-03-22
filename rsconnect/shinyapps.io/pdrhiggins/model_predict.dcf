@@ -1,0 +1,13 @@
+name: model_predict
+title: model_predict
+username:
+account: pdrhiggins
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5911715
+bundleId: 5714775
+url: https://pdrhiggins.shinyapps.io/model_predict/
+when: 1647981648.7426
+lastSyncTime: 1647981648.74262
+asMultiple: FALSE
+asStatic: FALSE
