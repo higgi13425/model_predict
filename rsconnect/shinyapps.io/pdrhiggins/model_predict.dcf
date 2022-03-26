@@ -4,10 +4,11 @@ username:
 account: pdrhiggins
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 5911715
-bundleId: 5714775
+appId: 5922327
+bundleId: 5720052
 url: https://pdrhiggins.shinyapps.io/model_predict/
-when: 1647981648.7426
-lastSyncTime: 1647981648.74262
+when: 1648081168.09107
+lastSyncTime: 1648081168.09109
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: dm_mod.RDS|linear_polyps.R|logistic_dm.R|polyp_mod.RDS

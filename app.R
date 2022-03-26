@@ -1,9 +1,9 @@
 library(shiny)
 library(shinythemes)
 
-# Define UI 
+# Define UI  (User Interface)
 ui <- shinyUI(fluidPage(
-  theme = shinytheme("united"),
+  theme = shinytheme("spacelab"),
   
   # Application title
   titlePanel("Health Insurance Annual Expenses Predictor"),
@@ -14,30 +14,37 @@ ui <- shinyUI(fluidPage(
       
       selectInput(inputId = 'sex', 
                   label = "Select Gender",
-                  choices = c("male", "female"),
+            choices = c("male", "female", "other"),
                   selected = "female"),
       
-      numericInput(
+      sliderInput(
         inputId = 'age',
         label = 'Age ',
-        30,
-        min = 1
+        value = 30,
+        min = 1,
+        max = 115
       ),
       
-      numericInput(inputId = 'bmi', 
-          label = 'BMI (Body Mass Index in kg/m2)', 20),
+      sliderInput(inputId = 'bmi', 
+          label = 'BMI (Body Mass Index in kg/m2)', 
+          value = 20,
+          min = 10,
+          max = 80),
       
-      actionButton('predict', "Predict", icon = icon("refresh"))
+      actionButton('predict', "Predict", icon = icon("briefcase-medical"))
       
     ),
     
-    # Show a plot of the generated distribution
+    # Show a table of the input values
     mainPanel(tabsetPanel(
       tabPanel(
         icon = icon("table"),
         "Prediction:",
+        tags$br(), # inserts line break
         tableOutput('table'),
-        tags$h3("Annual Medical Expenses in dollars", icon("dollar")),
+        tags$h5("Adjust the three input variables in the left sidebar and"),
+      tags$h5("Click on the Predict Button in the left sidebar to make a prediction"),
+        tags$h3("Annual Medical Expenses in dollars", icon("dollar-sign")),
         tags$h4(textOutput('insurance'))
       ),
       
@@ -45,19 +52,17 @@ ui <- shinyUI(fluidPage(
         icon = icon("book"),
         title = "About",
         tags$br(), # inserts line break
-        tags$div(
-          "This application predicts annual Medical care expenses
-          using dynamic input from the user. This prediction uses the following variables:",
+        tags$div( # div creates a new section of an HTML doc
+       "This application predicts hypothetical annual Medical care expenses using dynamic input from the user. This prediction uses the following variables:",
           tags$br(), # inserts line break
           tags$br(),
-          tags$ul( # starts list
+          tags$ul( # starts an unordered list (ul)
             tags$li( # list item
               "age : An integer indicating the age of the insured.",
-              tags$li("sex : The insured person's gender, either male or female"),
+              tags$li("sex : The insured person's gender, either male or female or other"),
               tags$li(
-                "bmi : The body mass index (BMI), which provides a sense of how over- or
-                under-weight a person is relative to their height. BMI is equal to weight (inkilograms)
-                divided by height (in meters) squared. An ideal BMI is within the range of 18.5 to 24.9."
+                "bmi : The body mass index (BMI), which is equal to weight (in kilograms)
+                divided by height (in meters) squared."
               )
             )
           )
@@ -65,13 +70,18 @@ ui <- shinyUI(fluidPage(
         tags$br(),
         "The application is built with the" ,
         tags$a("Shiny", href = "https://shiny.rstudio.com/"),
-        " framework for the R programming language. Multiple Linear Regression was used to fit the model.",
+        " framework for the R programming language. Multiple Linear Regression was used to fit the model.", 
+       # the a tag creates a link to a webpage
         tags$br(),
         tags$br(),
-        tags$p(
-          "Code for the application is available at (github link here). I welcome feedback and suggestions!"),
-        
-        tags$div()
+        "The code for the application is available at this" ,
+       tags$a("GitHub site.", href = "https://github.com/higgi13425/model_predict"),
+       " Check it out!",
+       tags$br(),
+       tags$br(),
+       "The icons are from the selection of 2009 free icons at ",
+       tags$a("FontAwesome", href = "https://fontawesome.com/search?m=free"),
+        tags$div() # close the div
       )
     ))
   )
@@ -80,6 +90,8 @@ ui <- shinyUI(fluidPage(
 # Define server logic required to model and predict
 server <- shinyServer(function(input, output) {
   # test and validate input types
+  # less necessary with sliderInput and dropdown
+  # more important for text or numeric open data entry
   test <- reactive({
     age <- as.integer(input$age)
     sex <- as.character(input$sex)
@@ -93,10 +105,14 @@ server <- shinyServer(function(input, output) {
     
   })
   
-
+# make prediction
   pred <- eventReactive(input$predict, {
-    charges <-  input$age*373.5 + input$bmi*14.7 + 73*(input$sex == "male")
+    charges <-  input$age*373.5 + 
+      input$bmi*14.7 + 
+      173*(input$sex == "male") + 
+      83*(input$sex == "female")
   })
+  # render output for the UI (User Interface)
   output$insurance <- renderText(pred())
   output$table <- renderTable(test())
 })
